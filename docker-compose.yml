@@ -32,6 +32,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "8080:80"
       - "443:443"
     volumes:
       - ./:/var/www/html
@@ -69,6 +70,24 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+    networks:
+      - laravel-network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: schoolmanagement-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: schoolms_user
+      PMA_PASSWORD: schoolms_password
+      MYSQL_ROOT_PASSWORD: root_password
+    depends_on:
+      - database
     networks:
       - laravel-network
 

@@ -12,11 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
+    // Public registration removed - only login is allowed
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
@@ -35,13 +31,18 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
+// Email verification routes (moved outside auth middleware)
+Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    ->middleware(['signed', 'throttle:6,1'])
+    ->name('verification.verify');
+
+Route::post('verify-email-with-password', [VerifyEmailController::class, 'verifyWithPassword'])
+    ->middleware('throttle:6,1')
+    ->name('verification.verify-with-password');
+
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
-
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')

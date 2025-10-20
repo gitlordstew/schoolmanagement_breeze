@@ -33,6 +33,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check if email is verified
+        if (!Auth::user()->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice')
+                ->with('message', 'Please verify your email address before accessing your dashboard.');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

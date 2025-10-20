@@ -33,6 +33,20 @@ export default function Authenticated({
                                 >
                                     Dashboard
                                 </NavLink>
+                                
+                                {/* Show User Management link for admin, moderator, hr, registrar */}
+                                {user.role && ['admin', 'moderator', 'hr', 'registrar'].includes(user.role) && (
+                                    <NavLink
+                                        href={route('user-management.index')}
+                                        active={
+                                            route().current('user-management.index') ||
+                                            route().current('user-management.create') ||
+                                            route().current('user-management.edit')
+                                        }
+                                    >
+                                        User Management
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -137,6 +151,20 @@ export default function Authenticated({
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        
+                        {/* Show User Management link for admin, moderator, hr, registrar */}
+                        {user.role && ['admin', 'moderator', 'hr', 'registrar'].includes(user.role) && (
+                            <ResponsiveNavLink
+                                href={route('user-management.index')}
+                                active={
+                                    route().current('user-management.index') ||
+                                    route().current('user-management.create') ||
+                                    route().current('user-management.edit')
+                                }
+                            >
+                                User Management
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">

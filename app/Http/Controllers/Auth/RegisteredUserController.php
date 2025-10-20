@@ -34,18 +34,28 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:student,parent,teacher',
+            'student_id' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'grade' => 'nullable|string|max:255',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'student_id' => $request->student_id,
+            'phone' => $request->phone,
+            'grade' => $request->grade,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Don't auto-login - require email verification first
+        // Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('verification.notice', absolute: false))
+            ->with('message', 'Registration successful! Please check your email to verify your account.');
     }
 }
